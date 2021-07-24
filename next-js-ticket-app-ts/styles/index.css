@@ -1,0 +1,27 @@
+.logo {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.logo span {
+  display: inline-block;
+  width: 100%;
+  color: white;
+  text-align: center;
+  vertical-align: middle;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.site-layout-sub-header-background {
+  background: #fff;
+}
+
+.site-layout-background {
+  background: #fff;
+}
+
+[data-theme="dark"] .site-layout-sub-header-background {
+  background: #141414;
+}
