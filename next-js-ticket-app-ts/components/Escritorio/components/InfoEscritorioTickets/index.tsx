@@ -1,43 +1,31 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import { useContext, useState } from "react";
 import { Button, Col, Divider, Row } from "antd";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import { CloseCircleOutlined, RightOutlined } from "@ant-design/icons";
-import { UserFrom } from "../../../../interfaces/User.interface";
+import { SocketContext } from "../../../../context/SocketContext";
 import { getUserFromStorage } from "../../../../helpers/getUserFromStorage";
+import { TicketFromBack } from "../../../../interfaces/ListTickets.interface";
 
 const InfoEscritorioTickets = () => {
-  // const router = useRouter();
-  // const [userForm, setUserForm] = useState<UserFrom>({
-  //   desktop: null,
-  //   nameUser: null,
-  // });
+  const { socket } = useContext(SocketContext);
+  const [ticketToWork, setTicketToWork] = useState<TicketFromBack | null>(null);
+  const [user] = useState(getUserFromStorage());
 
-  // console.log(userForm);
-
-  // //apenas renderice la pagina va a setear el estado
-  // useEffect(() => {
-  //   setUserForm(getUserFromStorage());
-  // }, []);
-
-  // // validamos si existe el usuario en local storage
-  // // si en caso existe se redirecciona al escritorio
-  // if (!userForm.desktop && !userForm.nameUser) {
-  //   return null;
-  // }
-
-  // if (userForm.desktop === null && userForm.nameUser === null) {
-  //   router.replace("/escritorio-tickets");
-  // }
+  const nextTicket = () => {
+    const user = getUserFromStorage();
+    socket.emit("siguiente-ticket-trabajar", user, (ticket: TicketFromBack) => {
+      setTicketToWork(ticket);
+    });
+  };
 
   return (
     <>
       <Row>
         <Col span={20}>
-          <Title level={2}>Jhosep</Title>
+          <Title level={2}>{user?.nameUser || ""}</Title>
           <Text> Usted está trabajando en el escritorio: </Text>
-          <Text type="success">5</Text>
+          <Text type="success">{user?.desktop || ""}</Text>
         </Col>
         <Col span={4}>
           <Button type="primary" shape="round" danger>
@@ -47,17 +35,19 @@ const InfoEscritorioTickets = () => {
         </Col>
       </Row>
       <Divider />
-      <Row>
-        <Col>
-          <Text>Está atendiendo el ticket número: </Text>
-          <Text style={{ fontSize: 30 }} type="danger">
-            55
-          </Text>
-        </Col>
-      </Row>
+      {ticketToWork && (
+        <Row>
+          <Col>
+            <Text>Está atendiendo el ticket número: </Text>
+            <Text style={{ fontSize: 30 }} type="danger">
+              {ticketToWork.number}
+            </Text>
+          </Col>
+        </Row>
+      )}
       <Row>
         <Col offset={20} span={4}>
-          <Button shape="round" type="primary">
+          <Button onClick={nextTicket} shape="round" type="primary">
             Siguiente
             <RightOutlined />
           </Button>

@@ -4,7 +4,7 @@ import WithoutAuth from "../../HOC/WithoutAuth";
 
 const EscritorioTicketsPage = () => {
   return (
-    <LayoutAntd hiddenMenu>
+    <LayoutAntd>
       <InfoEscritorioTickets />
     </LayoutAntd>
   );

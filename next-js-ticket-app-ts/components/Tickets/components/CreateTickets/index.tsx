@@ -1,14 +1,19 @@
+import React, { useContext, useState } from "react";
+import { SocketContext } from "../../../../context/SocketContext";
+import { TicketFromBack } from "../../../../interfaces/ListTickets.interface";
+
 import { DownloadOutlined } from "@ant-design/icons";
 import { Col, Row, Button, Space } from "antd";
-import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
-import React from "react";
 
-interface Props {}
+const CreateTickets = () => {
+  const { socket } = useContext(SocketContext);
+  const [lastTicket, setLastTicket] = useState<TicketFromBack | null>(null);
 
-const CreateTickets = (props: Props) => {
   const newTicket = (): void => {
-    console.log("nuevo ticket");
+    socket.emit("solicitar-ticket", null, (ticket: TicketFromBack) => {
+      setLastTicket(ticket);
+    });
   };
 
   return (
@@ -30,29 +35,31 @@ const CreateTickets = (props: Props) => {
           </Space>
         </Col>
       </Row>
-      <Row style={{ marginTop: 100 }} justify="center">
-        <Col span={14}>
-          <Title
-            style={{
-              textAlign: "center",
-            }}
-            level={5}
-          >
-            Su número
-          </Title>
-          <br />
-          <Title
-            level={5}
-            type="success"
-            style={{
-              fontSize: 55,
-              textAlign: "center",
-            }}
-          >
-            55
-          </Title>
-        </Col>
-      </Row>
+      {lastTicket && (
+        <Row style={{ marginTop: 100 }} justify="center">
+          <Col span={14}>
+            <Title
+              style={{
+                textAlign: "center",
+              }}
+              level={5}
+            >
+              Su número
+            </Title>
+            <br />
+            <Title
+              level={5}
+              type="success"
+              style={{
+                fontSize: 55,
+                textAlign: "center",
+              }}
+            >
+              {lastTicket?.number}
+            </Title>
+          </Col>
+        </Row>
+      )}
     </>
   );
 };
